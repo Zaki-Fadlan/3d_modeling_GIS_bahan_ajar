@@ -1,0 +1,12 @@
+# Lingkungan & cache
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# Bobot model (>100 MB per file, 15 GB total) — latih ulang lewat notebook 04
+ui3d/models/
+
+# Data mentah & antara — unduh ulang lewat ui3d/notebooks/download.py / notebook 00–01.
+# Citra Esri dan DEMNAS tidak boleh diredistribusi.
+ui3d/raw/
+ui3d/interim/

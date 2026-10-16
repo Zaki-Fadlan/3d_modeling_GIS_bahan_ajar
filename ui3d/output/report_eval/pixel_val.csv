@@ -1,0 +1,9 @@
+model,label,overall_accuracy,kappa,mIoU_4kelas,IoU_latar,IoU_bangunan,IoU_jalan,IoU_vegetasi,IoU_air
+"run2_e8 (OSM, epoch 7)",OSM,0.519,0.263,0.237,0.426,0.441,0.086,0.279,0.14
+"run2_e8 (OSM, epoch 7)",OSM+GOB,0.516,0.262,0.236,0.421,0.436,0.087,0.28,0.14
+"run2_e25 (OSM, epoch 3)",OSM,0.499,0.272,0.293,0.373,0.43,0.015,0.289,0.44
+"run2_e25 (OSM, epoch 3)",OSM+GOB,0.494,0.267,0.29,0.366,0.417,0.015,0.287,0.44
+"run3_e8 (OSM+GOB, epoch 3)",OSM,0.566,0.323,0.285,0.478,0.45,0.018,0.302,0.368
+"run3_e8 (OSM+GOB, epoch 3)",OSM+GOB,0.562,0.32,0.282,0.472,0.44,0.018,0.303,0.368
+"run3_e25 (OSM+GOB, epoch 5)",OSM,0.474,0.259,0.303,0.327,0.452,0.082,0.27,0.408
+"run3_e25 (OSM+GOB, epoch 5)",OSM+GOB,0.471,0.256,0.302,0.322,0.446,0.083,0.268,0.408

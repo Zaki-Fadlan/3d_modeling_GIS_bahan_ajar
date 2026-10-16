@@ -1,0 +1,5 @@
+sumber,area,n_ref,n_kandidat,n_pasangan,tingkat_deteksi_pct,iou_median,rmse_centroid_m,rmse_vertex_m,distorsi_pasangan_pct,distorsi_total_pct
+GOB_v3,AOI,995,1254,516,51.859,0.519,5.675,3.722,-0.357,-7.204
+GOB_v3,val,249,320,131,52.61,0.517,5.261,3.863,-4.883,-7.177
+MaskRCNN,AOI,995,1803,281,28.241,0.629,6.406,3.425,11.417,-155.251
+MaskRCNN,val,249,168,63,25.301,0.672,7.49,4.548,-6.279,-55.117

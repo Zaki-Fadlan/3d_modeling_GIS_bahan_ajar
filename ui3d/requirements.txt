@@ -1,0 +1,27 @@
+# Lingkungan lokal pipeline ui3d. Torch: pilih build CUDA yang cocok dari https://pytorch.org bila punya GPU.
+numpy
+pandas>=2.0
+geopandas>=1.0
+shapely>=2.0
+pyproj>=3.6
+rasterio>=1.3
+scipy>=1.10
+scikit-image
+pyyaml
+matplotlib
+plotly
+trimesh>=4.0
+mapbox-earcut
+pydeck>=0.9
+pillow
+torch>=2.1
+torchvision>=0.16
+jupyterlab
+# hanya untuk unduh ulang data (00_setup, REDOWNLOAD=True)
+osmnx>=2.0
+requests
+pystac-client
+planetary-computer
+mercantile
+s2sphere
+sliderule

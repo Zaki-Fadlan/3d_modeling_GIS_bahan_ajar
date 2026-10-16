@@ -1,0 +1,102 @@
+# Parameter global pipeline ui3d (PRD Langkah 0). Semua path relatif ke folder ui3d/.
+
+crs:
+  work: "EPSG:32748"          # UTM 48S, CRS kerja
+  geographic: "EPSG:4326"
+  vertical: "EPSG:4326+3855"  # WGS84 + EGM2008 (datum DEMNAS)
+  icesat2_src: "EPSG:4979"    # ellipsoid WGS84
+
+paths:
+  raw: "raw"
+  interim: "interim"
+  output: "output"
+  models: "models"
+  figures: "figures"
+
+raw:
+  aoi: "raw/aoi_ui.gpkg"                       # layer: aoi, aoi_buf50
+  osm: "raw/osm_ui.gpkg"                       # layer: buildings, roads, water, vegetation
+  osm_xml: "raw/osm_ui_bbox.osm"
+  demnas: "raw/DEMNAS_1209-42_v1.0.tif"
+  copdem: "raw/copdem_glo30_ui.tif"
+  icesat2: "raw/icesat2_atl08_ui.gpkg"         # layer: atl08_100m
+  imagery: "raw/ui_rgb_esri_z19.tif"
+  gob_v3: "raw/gob_v3_ui_bbox.gpkg"            # layer: gob_v3
+  gob_25d: "raw/OpenBuildings25D_UI_Depok_2023.tif"
+
+aoi:
+  query: "Universitas Indonesia, Depok"
+  buffer_m: 50
+  terrain_buffer_m: 3000
+  bbox_fallback: [106.8185, -6.3758, 106.8337, -6.3452]  # minx, miny, maxx, maxy (EPSG:4326)
+
+terrain:
+  grid_m: 8
+  thresholds_m: [0.2, 0.4, 0.65, 0.85]   # kelas paper
+  max_uncertainty_m: 5.0                 # buang segmen ATL08 dengan h_te_uncertainty lebih besar
+  open_ground_dist_m: 20                 # subset "tanah terbuka": jauh dari gedung OSM
+  open_ground_max_canopy_m: 2.0
+  low_canopy_m: 5.0                      # subset kanopi rendah (ICESat-2 h_canopy)
+
+imagery:
+  zoom: 19
+  res_m: 0.3                             # resolusi citra setelah reproyeksi ke UTM
+
+footprint:
+  min_area_m2: 10
+  gob_min_confidence: 0.75
+  waterway_width_m: 3.0
+  match_iou: 0.3                         # pasangan dipakai untuk RMSE bila IoU >= nilai ini
+  verify_sample: 25
+
+roads:
+  width_m:                               # lebar jalan per kelas highway (buffer = lebar / 2)
+    motorway: 14
+    trunk: 12
+    primary: 10
+    secondary: 8
+    tertiary: 7
+    residential: 5
+    unclassified: 5
+    service: 4
+    footway: 2
+    path: 2
+    cycleway: 2
+    pedestrian: 3
+    steps: 2
+    default: 4
+
+maskrcnn:
+  chip_px: 512
+  overlap_px: 64                         # overlap sliding window saat inferensi
+  train_stride_px: 256                   # stride chip latih (overlap 50%) untuk memperbanyak data
+  block_chips: 4                         # blok spasial 4x4 chip untuk split 80/20
+  val_fraction: 0.2
+  min_pixels: 20                         # instance lebih kecil dibuang
+  batch_size: 1                          # 1 cukup untuk GPU 6 GB; naikkan bila memori lega
+  lr: 0.005
+  epochs: [8, 25]                        # replikasi paper, lalu pembanding
+  score_threshold: 0.5
+  iou_threshold: 0.5
+  simplify_m: 0.5
+  seed: 42
+  label_gob: true                        # tambah gedung GOB v3 (>= confidence) yang tidak ada di OSM ke label latih
+  gob_max_overlap: 0.2                   # GOB dianggap sudah ada di OSM bila > 20% luasnya tertutup OSM
+
+building:
+  GFl: 4.0                    # tinggi lantai dasar (m)
+  Fl: 3.5                     # tinggi lantai (m)
+  roof_const: 1.0             # konstanta +1,0 m (Pers. 1)
+  base_elev_percentile: 10
+
+flood:
+  level_step_m: 1.0
+  level_percentiles: [2, 20]  # rentang level muka air dari persentil DEM di AOI (p50 = separuh AOI pasti tergenang)
+  building_mask_buffer_m: 4
+  map_level: null             # null = level tengah rentang
+
+indoor:
+  name_contains: "Dekanat FTUI"  # pilih gedung yang namanya memuat teks ini; kosong = gedung terbesar
+  corridor_w_m: 2.5
+  room_w_m: 6.0
+  min_room_m2: 4.0
