@@ -11,7 +11,7 @@ pip install -r requirements.txt
 jupyter lab notebooks/
 ```
 
-Jalankan notebook berurutan `00` → `10`. Tiap notebook membaca output notebook sebelumnya dari
+Jalankan notebook berurutan `00` → `11`. Tiap notebook membaca output notebook sebelumnya dari
 `interim/` dan `output/`, jadi bisa dijalankan ulang terpisah. Notebook 04 (Mask R-CNN) butuh GPU CUDA.
 
 ## Isi
@@ -19,13 +19,14 @@ Jalankan notebook berurutan `00` → `10`. Tiap notebook membaca output notebook
 | Path | Isi |
 | --- | --- |
 | `config.yaml` | Parameter global: CRS, path data, `GFl`, `Fl`, ambang evaluasi, Mask R-CNN, banjir, indoor |
-| `notebooks/ui3d_common.py` | Helper bersama: config, path, kategori gedung, statistik zonal, lebar jalan |
+| `notebooks/ui3d_common.py` | Helper bersama: config, path, kategori gedung, statistik zonal, lebar jalan, hillshade, terrain web (pydeck) |
 | `notebooks/download.py` | Unduh ulang data mentah yang hilang (dipanggil dari 00) |
 | `notebooks/00_setup` … `10_indoor` | Langkah 0–10 PRD |
+| `notebooks/11_animation` | Animasi orbit 360° model LOD2 ke GIF/MP4 (PyVista) |
 | `raw/` | Data mentah (lihat `raw/README.md`) |
 | `interim/` | AOI, citra UTM, layer OSM bersih, titik terrain, indeks chip |
 | `models/` | Checkpoint Mask R-CNN per epoch, `maskrcnn_ui.pt` |
-| `output/` | `ui3d.gpkg`, `ui_lod1.glb/.obj`, `ui_lod2.glb`, `ui3d_web.html`, tabel evaluasi, banjir, indoor |
+| `output/` | `ui3d.gpkg`, `ui_lod1.glb/.obj`, `ui_lod2.glb`, `ui3d_web.html`, `ui_orbit.gif/.mp4`, `flood_rise.gif`, tabel evaluasi, banjir, indoor |
 | `figures/` | Padanan Fig. 1–25 paper |
 
 ## Beda dari PRD

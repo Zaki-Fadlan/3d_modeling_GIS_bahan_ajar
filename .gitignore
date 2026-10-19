@@ -10,3 +10,6 @@ ui3d/models/
 # Citra Esri dan DEMNAS tidak boleh diredistribusi.
 ui3d/raw/
 ui3d/interim/
+
+# Log/screenshot alat browser (Playwright MCP)
+.playwright-mcp/

@@ -21,6 +21,7 @@ raw:
   copdem: "raw/copdem_glo30_ui.tif"
   icesat2: "raw/icesat2_atl08_ui.gpkg"         # layer: atl08_100m
   imagery: "raw/ui_rgb_esri_z19.tif"
+  imagery_context: "raw/ui_rgb_esri_z17_context.tif"  # AOI + 3 km, latar terrain 3D (notebook 07)
   gob_v3: "raw/gob_v3_ui_bbox.gpkg"            # layer: gob_v3
   gob_25d: "raw/OpenBuildings25D_UI_Depok_2023.tif"
 
@@ -41,6 +42,7 @@ terrain:
 imagery:
   zoom: 19
   res_m: 0.3                             # resolusi citra setelah reproyeksi ke UTM
+  context_zoom: 17                       # ~1,2 m; citra konteks di luar kampus
 
 footprint:
   min_area_m2: 10
@@ -87,6 +89,7 @@ building:
   GFl: 4.0                    # tinggi lantai dasar (m)
   Fl: 3.5                     # tinggi lantai (m)
   roof_const: 1.0             # konstanta +1,0 m (Pers. 1)
+  context_m: 1000             # lebar cincin terrain bertekstur di sekeliling kampus (notebook 07)
   base_elev_percentile: 10
 
 flood:

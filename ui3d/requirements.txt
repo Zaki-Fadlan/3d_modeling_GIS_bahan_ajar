@@ -13,6 +13,8 @@ plotly
 trimesh>=4.0
 mapbox-earcut
 pydeck>=0.9
+pyvista>=0.44            # 11_animation
+imageio-ffmpeg           # 11_animation: tulis MP4
 pillow
 torch>=2.1
 torchvision>=0.16

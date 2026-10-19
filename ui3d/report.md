@@ -1,6 +1,8 @@
 # Laporan Validasi dan Performa — 3D City Model Kampus UI Depok
 
-Tanggal: 16 Oktober 2026. Replikasi Khayyal, Zeidan & Beshr (2022) dengan data terbuka, dijalankan lokal (notebook 00–10).
+Tanggal: 16 Oktober 2026, visualisasi diperbarui 19 Oktober 2026 (§4, §6). Replikasi Khayyal, Zeidan & Beshr (2022)
+dengan data terbuka, dijalankan lokal (notebook 00–11). Pembaruan 19 Oktober hanya mengubah visual; semua angka evaluasi
+tetap sama.
 
 ## Ringkasan
 
@@ -178,6 +180,11 @@ Referensi: 1.249 segmen ICESat-2 ATL08 (100 m), dikonversi ke EGM2008 (undulasi 
 - NMAD (tahan pencilan) jauh lebih kecil dari RMSE: galat dominan berasal dari sebagian kecil titik ekstrem (25 titik dengan |ΔZ| > 20 m).
 - Di tanah terbuka Copernicus lebih konsisten (NMAD 0,31 m) daripada DEMNAS (NMAD 7,36 m, bias −11,5 m), tetapi n = 15 dan semuanya di luar AOI kampus, sehingga kesimpulan ini lemah.
 - Sebagai pembanding, Susetyo (2023) melaporkan RMSE vertikal DEMNAS 8,17 m terhadap GPS di Bogor; hasil di sini (7,64 m) sejalan.
+- Hillshade (metode Horn, azimut 315°, altitude 45°, z×3; identik dengan `gdaldem`, selisih ≤ 0,5 dari 255) memperlihatkan
+  hal yang sama secara visual: DEMNAS tajam tetapi berbintik karena kanopi dan atap ikut terekam, Copernicus lebih halus
+  (asli 30 m) tetapi gedung kampus tetap muncul sebagai gundukan. Keduanya DSM, bukan DTM.
+
+![Hillshade DEMNAS vs Copernicus](figures/fig04b_hillshade.png)
 
 ## 5. Tinggi bangunan dan geodatabase
 
@@ -199,12 +206,33 @@ Referensi: 1.249 segmen ICESat-2 ATL08 (100 m), dikonversi ke EGM2008 (undulasi 
 | Output | Hasil |
 | --- | --- |
 | LOD1 (`ui_lod1.glb`, `.obj`) | 995 gedung, generate 0,56 s (0,56 ms/gedung) |
-| LOD2 (`ui_lod2.glb`, 55 MB) | 995 gedung, ±44 ribu jendela, 995 pintu, generate 3,4 s (3,4 ms/gedung) |
-| Web-GIS (`ui3d_web.html`) | 995 gedung extruded, tooltip atribut |
+| LOD2 (`ui_lod2.glb`, 40 MB) | 995 gedung, ±44 ribu jendela, 995 pintu, generate 3,4 s (3,4 ms/gedung) |
+| Terrain model 3D | Kampus bertekstur citra 0,3 m; cincin 1 km di sekelilingnya bertekstur citra konteks 1,2 m (`config.yaml` `building.context_m`); 12 badan air di-*hydro-flatten* (3.760 simpul DEM diturunkan) |
+| Animasi (`ui_orbit.gif`, `.mp4`) | Orbit 360° model LOD2 dengan PyVista (notebook 11) |
+| Web-GIS (`ui3d_web.html`) | 995 gedung extruded di atas terrain AWS Terrain Tiles + citra Esri (di-stream), tooltip atribut |
 | Banjir (level 54–65 m, EGM2008) | 8 gedung terdampak di 54 m, 435 di 65 m; metode "terhubung ke danau" hanya berbeda 0–9 gedung dari ambang biasa |
+| Banjir 3D (`flood_3d.html`, `flood_rise.gif`) | Web: genangan di atas terrain + citra; animasi: muka air naik level demi level di atas DTM bertekstur citra |
 | Indoor | Dekanat FTUI, 808 m², 2 lantai, koridor + ruang ±6 m |
 
 ![Gedung terdampak](figures/fig23_gedung_terdampak.png)
+
+### 6.1 Pembaruan visualisasi (19 Oktober 2026)
+
+- **Terrain bertekstur sampai sekeliling kampus.** Sebelumnya model berhenti di tepi kotak AOI + 50 m. Citra konteks
+  Esri zoom 17 (`raw/ui_rgb_esri_z17_context.tif`, AOI + 3 km) menutup cincin 1 km. Kampus dan cincin memakai grid DEM
+  yang sama, jadi tidak ada celah di sambungan. Tekstur terrain disimpan JPEG di GLB, sehingga LOD2 turun dari 55 MB ke
+  40 MB walau areanya lebih luas.
+- **Hydro-flattening.** DEM adalah DSM, jadi tepi danau ikut setinggi kanopi dan menutupi muka air. Muka air kini datar per
+  danau (persentil 10 DEM di dalamnya), dan simpul DEM di dalam danau diturunkan 1 m di bawahnya.
+- **Web-GIS di atas terrain.** pydeck tidak membawa `TerrainExtension`, jadi dasar tiap gedung diambil dari tile terrain
+  yang sama dengan yang ditampilkan (`terrarium_z` di `ui3d_common.py`). Tile terrarium hanya tersedia sampai zoom 15,
+  sehingga citra di web ±4,8 m/piksel. Versi tajam ada di GLB.
+- **Banjir web.** Level dihitung di DEMNAS, sedangkan terrain web berbasis SRTM. Muka air web digeser sebesar selisih
+  median keduanya di dasar gedung (+3,6 m).
+
+![Model 3D di atas terrain bertekstur](figures/fig26_orbit_frames.png)
+
+![Genangan level 65 m](figures/fig25_genangan_3d.png)
 
 ## 7. Kesimpulan dan rekomendasi
 
@@ -223,4 +251,5 @@ Referensi: 1.249 segmen ICESat-2 ATL08 (100 m), dikonversi ke EGM2008 (undulasi 
 | `output/report_eval/pixel_val.csv` | Overall accuracy, kappa, mIoU per model |
 | `output/report_eval/instance_cm.json`, `pixel_cm.json` | Confusion matrix lengkap semua model |
 | `output/dl_metrics.csv`, `output/footprint_eval.csv`, `output/terrain_eval.csv` | Output notebook 04, 05, 02 (run 3) |
+| `output/flood_impact.csv` | Gedung terdampak dan luas genangan per level (notebook 09) |
 | `figures/cm_instance.png`, `figures/cm_pixel.png` | Gambar confusion matrix |
