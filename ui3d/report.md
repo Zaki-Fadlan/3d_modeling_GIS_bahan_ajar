@@ -213,6 +213,7 @@ Referensi: 1.249 segmen ICESat-2 ATL08 (100 m), dikonversi ke EGM2008 (undulasi 
 | Banjir (level 54–65 m, EGM2008) | 8 gedung terdampak di 54 m, 435 di 65 m; metode "terhubung ke danau" hanya berbeda 0–9 gedung dari ambang biasa |
 | Banjir 3D (`flood_3d.html`, `flood_rise.gif`) | Web: genangan di atas terrain + citra; animasi: muka air naik level demi level di atas DTM bertekstur citra |
 | Indoor | Dekanat FTUI, 808 m², 2 lantai, koridor + ruang ±6 m |
+| Sky View Factor (`svf_1m.tif`, notebook 07) | DSM model 1 m (DTM + LOD1); tanah kampus median SVF 0,90, 10,9% < 0,7 (tertutup), 51,4% > 0,9 (terbuka); 6,3 juta piksel dalam 12 s; vs `rvt-py` MAE 0,005, r = 0,999 |
 
 ![Gedung terdampak](figures/fig23_gedung_terdampak.png)
 
@@ -233,6 +234,14 @@ Referensi: 1.249 segmen ICESat-2 ATL08 (100 m), dikonversi ke EGM2008 (undulasi 
 ![Model 3D di atas terrain bertekstur](figures/fig26_orbit_frames.png)
 
 ![Genangan level 65 m](figures/fig25_genangan_3d.png)
+
+- **Sky View Factor.** Ide horizon scanning dari [svfpy](https://github.com/AndaSampa/svfpy), ditulis ulang dengan NumPy
+  di notebook 07 (svfpy memanggil GDAL CLI dan belum berbentuk pustaka). SVF rendah di halaman sempit antar-gedung tinggi
+  dan lembah danau. Pohon hanya terwakili gundukan halus DEMNAS 8 m, jadi SVF di bawah tajuk masih terlalu tinggi.
+
+![Peta dan distribusi SVF](figures/fig27_svf.png)
+
+![Sky View Factor 3D](figures/fig27b_svf_3d.png)
 
 ## 7. Kesimpulan dan rekomendasi
 

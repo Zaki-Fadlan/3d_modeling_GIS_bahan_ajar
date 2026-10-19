@@ -92,6 +92,12 @@ building:
   context_m: 1000             # lebar cincin terrain bertekstur di sekeliling kampus (notebook 07)
   base_elev_percentile: 10
 
+svf:                          # Sky View Factor (notebook 07), metode horizon scanning
+  res_m: 1.0                  # resolusi DSM model (gedung LOD1 + DTM)
+  n_dir: 16                   # jumlah azimut
+  radius_m: 100               # jarak cari horizon
+  mask_buffer_m: 4            # buffer gedung saat DSM DEMNAS → DTM
+
 flood:
   level_step_m: 1.0
   level_percentiles: [2, 20]  # rentang level muka air dari persentil DEM di AOI (p50 = separuh AOI pasti tergenang)

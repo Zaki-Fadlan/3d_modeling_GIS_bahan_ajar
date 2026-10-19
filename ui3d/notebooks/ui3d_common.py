@@ -80,6 +80,25 @@ def categorize(row):
     return "fasilitas_umum"
 
 
+def dsm_to_dtm(dem, transform, buildings, buffer_m):
+    """DSM → mendekati DTM: piksel gedung (footprint + buffer_m) dibuang lalu diinterpolasi linear, sisanya nearest.
+
+    Hanya gedung yang dihapus; kanopi tetap ada di permukaan. Kembalikan (dtm, mask_gedung).
+    """
+    from rasterio.features import rasterize
+    from scipy.interpolate import griddata
+
+    bmask = rasterize([(g, 1) for g in buildings.buffer(buffer_m)], out_shape=dem.shape, transform=transform,
+                      dtype="uint8", all_touched=True).astype(bool)
+    bad = bmask | np.isnan(dem)
+    rr, cc = np.indices(dem.shape)
+    dtm = dem.copy()
+    dtm[bad] = griddata((rr[~bad], cc[~bad]), dem[~bad], (rr[bad], cc[bad]), method="linear")
+    still = np.isnan(dtm)
+    dtm[still] = griddata((rr[~bad], cc[~bad]), dem[~bad], (rr[still], cc[still]), method="nearest")
+    return dtm, bmask
+
+
 def hillshade(z, res, azimuth=315, altitude=45, z_factor=1.0):
     """Hillshade metode Horn (setara gdaldem; rumus di notebook 02): 0 = gelap, 1 = terang. res dalam meter."""
     zp = np.pad(z, 1, mode="edge")
