@@ -1,0 +1,94 @@
+<title>Reel Z · Versi Kelas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/*__FONTS__*/
+/* Layout: a single film stage with a chaptered transport underneath; one committed dark look (screening room). */
+:root{
+  --ink:#ECF2FF; --mute:#8C9DBE; --bg:#050C19; --panel:#0B1931; --line:rgba(140,157,190,.26);
+  --gold:#F4C542; --cyan:#47D7EA;
+  --f-d:"Unbounded","Arial Black",sans-serif; --f-b:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif; --f-m:"IBM Plex Mono","DejaVu Sans Mono",monospace;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-b)}
+.wrap{max-width:1280px;margin:0 auto;padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+.top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px}
+h1{margin:0;font-family:var(--f-d);font-weight:700;font-size:clamp(22px,3vw,34px);letter-spacing:.01em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--gold)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-family:var(--f-m);font-size:12px;color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.meta b{color:var(--ink);font-weight:600}
+.frame{position:relative;width:100%;max-width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+canvas{display:block;width:100%;height:100%}
+.big{position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:50%;border:0;background:rgba(244,197,66,.92);color:#050C19;cursor:pointer;display:grid;place-items:center}
+.big:focus-visible,.btn:focus-visible,.chap:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.big svg{width:30px;height:30px;margin-left:4px}
+.bar{display:grid;grid-template-columns:auto auto auto 1fr auto;align-items:center;gap:12px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--panel);color:var(--ink);height:40px;min-width:44px;padding:0 14px;border-radius:8px;font:600 13px var(--f-m);cursor:pointer}
+.btn:hover{border-color:var(--gold)}
+input[type=range]{width:100%;accent-color:var(--gold);min-width:0}
+.tc{font-family:var(--f-m);font-size:13px;color:var(--mute);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chaps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.chap{appearance:none;text-align:left;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:10px 12px;cursor:pointer;display:grid;gap:2px;font:inherit;min-width:0}
+.chap:hover{border-color:var(--gold)}
+.chap[aria-current="true"]{background:var(--panel);border-color:var(--gold)}
+.chap .n{font-weight:600;font-size:14px;line-height:1.3}
+.chap .t{font-family:var(--f-m);font-size:11px;color:var(--mute);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.hint{margin:0;font-size:13px;color:var(--mute);max-width:70ch}
+@media (max-width:760px){.chaps{grid-template-columns:repeat(2,minmax(0,1fr))}.bar{grid-template-columns:auto auto auto}.bar input,.bar .tc{grid-column:1/-1}}
+@media (prefers-reduced-motion:reduce){.big{transition:none}}
+html.render,html.render body{margin:0;padding:0;background:#000}
+html.render .top,html.render .bar,html.render .chaps,html.render .hint,html.render .big{display:none}
+html.render .wrap{padding:0;max-width:none;width:1920px}
+html.render .frame{width:1920px;border-radius:0;box-shadow:none}
+</style>
+<main class="wrap">
+  <header class="top">
+    <h1>Reel <em>Z</em> · Analisis Data 3D, versi kelas</h1>
+    <div class="meta"><span><b>03:32</b> durasi</span><span><b>120</b> bpm</span><span><b>1920×1080</b> · 24 fps</span><span>Pekan 9 · PAR</span></div>
+  </header>
+  <div class="frame" id="frame" role="img" aria-label="Film animasi 3,5 menit dengan subtitle dan penjelasan rumus yang menjelaskan konsep analisis data 3D: dari titik dan sumbu z, perbedaan 2D, 2.5D dan 3D, model data point cloud, TIN, DEM dan voxel, analisis slope, aspect dan hillshade, viewshed dan line of sight, cut and fill, model kota 3D dengan analisis bayangan, hingga alur kerja input-proses-output.">
+    <canvas id="stage" width="1920" height="1080"></canvas>
+    <button class="big" id="big" aria-label="Putar dengan suara"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></button>
+  </div>
+  <div class="bar">
+    <button class="btn" id="play" aria-label="Putar">Putar</button>
+    <button class="btn" id="snd" aria-pressed="true">Suara: on</button>
+    <button class="btn" id="cc" aria-pressed="true">Subtitle: on</button>
+    <input type="range" id="seek" min="0" max="212" step="0.01" value="0" aria-label="Posisi waktu">
+    <span class="tc" id="tc">00:00 / 03:32</span>
+  </div>
+  <nav class="chaps" id="chaps" aria-label="Babak"></nav>
+  <p class="hint">Semua gambar dihitung langsung di canvas: viewshed, profil garis pandang, dan volume cut &amp; fill memakai permukaan yang sama yang terlihat di layar. Volume akuifer, buffer 3D, IDW, dan kurva genangan juga dihitung dari data yang sama. Setiap rumus diurai dengan contoh angka dari scene itu sendiri. Bagian Kampus UI memakai data asli pipeline ui3d: 995 gedung OSM, DEMNAS, ICESat-2, peta kelas Mask R-CNN, genangan, dan ruang Dekanat FTUI. Musik disintesis dengan kode.</p>
+</main>
+<!--THREE-->
+<script>/*__UIDATA__*/</script>
+<script>window.__TIMELINE=/*__TL__*/;</script>
+<script>window.__AUDIO=/*__AUDIOJSON__*/;</script>
+<script>/*__REEL__*/</script>
+<script>
+(function(){
+  const CH=[[0,'Titik'],[4,'Sumbu Z & datum'],[14,'2D · 2.5D · 3D'],[24,'LiDAR & filter ground'],[30,'Interpolasi'],[48,'TIN · DEM · voxel'],[56,'Analisis permukaan'],[90,'Viewshed'],[100,'Cut & fill'],[116,'Buffer & jarak 3D'],[134,'Voxel bawah tanah'],[146,'UI · uji DEM'],[159,'UI · Mask R-CNN'],[171,'UI · tinggi & LOD2'],[187,'UI · genangan'],[197,'UI · indoor'],[204,'Alur kerja'],[208,'Penutup']];
+  const nav=document.getElementById('chaps');
+  const fmt=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+  CH.forEach(([t,n])=>{const b=document.createElement('button');b.className='chap';b.type='button';b.innerHTML=`<span class="n"></span><span class="t">${fmt(t)}</span>`;b.querySelector('.n').textContent=n;b.onclick=()=>{seekTo(t+0.01)};nav.appendChild(b);});
+  const audio=new Audio('/*__MP3__*/'); audio.preload='auto';
+  let playing=false,t0=0,base=0,cur=0,muted=false;
+  const seek=document.getElementById('seek'),tc=document.getElementById('tc'),play=document.getElementById('play'),big=document.getElementById('big'),snd=document.getElementById('snd');
+  function now(){ if(!playing) return cur; if(!muted && !audio.paused) return audio.currentTime; return base+(performance.now()-t0)/1000; }
+  function draw(t){ cur=t; window.frameAt(t); seek.value=t; tc.textContent=`${fmt(t)} / 03:32`;
+    const idx=CH.reduce((a,c,i)=>t>=c[0]?i:a,0); [...nav.children].forEach((b,i)=>b.setAttribute('aria-current',i===idx?'true':'false')); }
+  function loop(){ if(!playing) return; let t=now(); if(t>=212){ t=0; base=0; t0=performance.now(); try{audio.currentTime=0;}catch(e){} }
+    draw(t); requestAnimationFrame(loop); }
+  function start(){ playing=true; base=cur; t0=performance.now(); big.hidden=true; play.textContent='Jeda'; play.setAttribute('aria-label','Jeda');
+    if(!muted){ try{audio.currentTime=cur;}catch(e){} audio.play().catch(()=>{}); } requestAnimationFrame(loop); }
+  function stop(){ cur=now(); playing=false; audio.pause(); play.textContent='Putar'; play.setAttribute('aria-label','Putar'); }
+  function seekTo(t){ cur=t; base=t; t0=performance.now(); if(!muted&&playing){try{audio.currentTime=t;}catch(e){}} draw(t); }
+  play.onclick=()=>playing?stop():start(); big.onclick=start;
+  snd.onclick=()=>{ muted=!muted; snd.textContent='Suara: '+(muted?'off':'on'); snd.setAttribute('aria-pressed',String(!muted));
+    if(muted){ base=now(); t0=performance.now(); audio.pause(); } else if(playing){ try{audio.currentTime=now();}catch(e){} audio.play().catch(()=>{}); } };
+  seek.oninput=()=>seekTo(parseFloat(seek.value));
+  const cc=document.getElementById('cc'); window.SUBS=true;
+  cc.onclick=()=>{ window.SUBS=!window.SUBS; cc.textContent='Subtitle: '+(window.SUBS?'on':'off'); cc.setAttribute('aria-pressed',String(window.SUBS)); if(!playing) draw(cur); };
+  window.reelReady=(async()=>{ try{ await Promise.all(['400','500','600','700','800'].map(w=>document.fonts.load(`${w} 40px Unbounded`)).concat(['400','500','600'].map(w=>document.fonts.load(`${w} 30px "IBM Plex Sans"`)),['500','600'].map(w=>document.fonts.load(`${w} 20px "IBM Plex Mono"`)))); await document.fonts.ready; }catch(e){} draw(7.6); return true; })();
+})();
+</script>

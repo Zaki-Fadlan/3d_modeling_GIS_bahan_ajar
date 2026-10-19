@@ -1,0 +1,6 @@
+playwright>=1.40
+numpy>=1.24
+scipy>=1.10
+pillow>=10.0
+# hanya untuk ekspor ulang data kampus (extra/data-export):
+# geopandas rasterio shapely pyogrio
