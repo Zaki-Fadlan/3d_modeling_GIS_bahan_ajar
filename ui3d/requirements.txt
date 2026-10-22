@@ -1,4 +1,4 @@
-# Lingkungan lokal pipeline ui3d. Torch: pilih build CUDA yang cocok dari https://pytorch.org bila punya GPU.
+# Library pipeline ui3d, dipasang oleh sel setup main.ipynb di Google Colab (torch/torchvision sudah ada di Colab).
 numpy
 pandas>=2.0
 geopandas>=1.0
@@ -13,14 +13,13 @@ plotly
 trimesh>=4.0
 mapbox-earcut
 pydeck>=0.9
-pyvista>=0.44            # 11_animation
-imageio-ffmpeg           # 11_animation: tulis MP4
-# opsional, validasi SVF di 07: pip install --no-deps rvt-py (tanpa --no-deps ia menarik GDAL yang perlu dikompilasi)
+pyvista>=0.44            # bagian 11
+imageio-ffmpeg           # bagian 11: tulis MP4
+# rvt-py (validasi SVF di 07) dipasang terpisah oleh sel setup dengan --no-deps, karena ia menarik GDAL yang perlu dikompilasi
 pillow
 torch>=2.1
 torchvision>=0.16
-jupyterlab
-# hanya untuk unduh ulang data (00_setup, REDOWNLOAD=True)
+# hanya untuk unduh ulang data (bagian 00, REDOWNLOAD=True)
 osmnx>=2.0
 requests
 pystac-client
